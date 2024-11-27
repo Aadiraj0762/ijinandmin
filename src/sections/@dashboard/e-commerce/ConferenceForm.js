@@ -69,6 +69,8 @@ export default function ConferenceForm({ isEdit, currentConference }) {
     country: Yup.string().required('Country is required'),
     language: Yup.string().required('Language is required'),
     description: Yup.string().max(20000, 'Description must not exceed 200 words'),
+    coverImage: Yup.array().min(1, 'At least one image is required'),
+
   });
 
   const defaultValues = useMemo(
@@ -82,6 +84,8 @@ export default function ConferenceForm({ isEdit, currentConference }) {
       country: currentConference?.country || '',
       language: currentConference?.language || '',
       description: currentConference?.description || '',
+      coverImage: [],
+
     }),
     [currentConference]
   );
@@ -116,6 +120,8 @@ export default function ConferenceForm({ isEdit, currentConference }) {
               country: conference.country || '',
               language: conference.language || '',
               description: conference.description || '',
+              coverImage: conference?.coverImage || [],
+
             });
           } else {
             enqueueSnackbar('Conference not found', { variant: 'error' });
@@ -257,7 +263,7 @@ export default function ConferenceForm({ isEdit, currentConference }) {
                               <Box component="span" sx={{ flexShrink: 0, mr: 2, fontSize: 22 }}>
                                 {countryToFlag(option.code)}
                               </Box>
-                              {option.label} ({option.code}) +{option.phone}
+                              {option.label} ({option.code})
                             </Box>
                           )}
                           onChange={(_, value) => field.onChange(value?.label)}

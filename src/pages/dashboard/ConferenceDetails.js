@@ -32,98 +32,121 @@ const formatFirestoreTimestamp = (timestamp) => {
 const ConferenceOverviewTab = ({ conference }) => (
   <Card>
     <Box sx={{ p: 3, border: '1px solid #e0e0e0', borderRadius: '8px' }}>
-      <Grid container spacing={1}>
-        {/* Conference Details with full width */}
-        <Grid item xs={12}>
+      <Grid container spacing={2}>
+        {conference.coverImage && (
+          <Grid item xs={12} md={3}>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: { xs: 'center', md: 'flex-start' },
+              mb: { xs: 2, md: 0 },
+              p: 1,
+              border: '1px solid #e0e0e0', // Border around the cover image
+              borderRadius: '8px',
+            }}>
+              <img
+                src={conference.coverImage}
+                alt="Cover"
+                style={{ width: '100%', maxWidth: '200px', height: 'auto' }}
+              />
+            </Box>
+          </Grid>
+        )}
+        <Grid item xs={12} md={9}>
+
           <Grid container spacing={1}>
-            {conference.title && (
-              <Grid item xs={12}>
-                <Typography variant="h2">
-                  {conference.title}
-                </Typography>
-              </Grid>
-            )}
+            {/* Conference Details with full width */}
             <Grid item xs={12}>
-              <Divider sx={{ my: 2 }} />
+              <Grid container spacing={1}>
+                {conference.title && (
+                  <Grid item xs={12}>
+                    <Typography variant="h2">
+                      {conference.title}
+                    </Typography>
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <Divider sx={{ my: 2 }} />
+                </Grid>
+                {conference.organizer && (
+                  <Grid item xs={12} md={6}>
+                    <Typography>
+                      <b>Organizer:</b> {conference.organizer}
+                    </Typography>
+                  </Grid>
+                )}
+
+                {conference.venue && (
+                  <Grid item xs={12} md={6}>
+                    <Typography>
+                      <b>Venue:</b> {conference.venue}
+                    </Typography>
+                  </Grid>
+                )}
+
+                {conference.date && (
+                  <Grid item xs={12} md={6}>
+                    <Typography>
+                      <b>Date:</b> {formatFirestoreTimestamp(conference.date)}
+                    </Typography>
+                  </Grid>
+                )}
+
+                {conference.contactPerson && (
+                  <Grid item xs={12} md={6}>
+                    <Typography>
+                      <b>Contact Person:</b> {conference.contactPerson}
+                    </Typography>
+                  </Grid>
+                )}
+
+                {conference.email && (
+                  <Grid item xs={12} md={6}>
+                    <Typography>
+                      <b>Email:</b> {conference.email}
+                    </Typography>
+                  </Grid>
+                )}
+
+                {conference.country && (
+                  <Grid item xs={12} md={6}>
+                    <Typography>
+                      <b>Country:</b> {conference.country}
+                    </Typography>
+                  </Grid>
+                )}
+
+                {conference.language && (
+                  <Grid item xs={12} md={6}>
+                    <Typography>
+                      <b>Language:</b> {conference.language}
+                    </Typography>
+                  </Grid>
+                )}
+
+                {conference && conference.Status && (
+                  <Grid item xs={12} md={6}>
+                    <Typography>
+                      <b>Status:</b> {conference.Status}
+                    </Typography>
+                  </Grid>
+                )}
+
+                {/* Divider before the description */}
+                <Grid item xs={12}>
+                  <Divider sx={{ my: 2 }} />
+                </Grid>
+
+                {conference.description && (
+                  <Grid item xs={12}>
+                    <Typography style={{ textAlign: "justify" }}>
+                      <b>Description:</b>
+                      {/* <span dangerouslySetInnerHTML={{ __html: sanitizeAndFormatDescription(conference.description) }} /> */}
+                      {conference.description}
+                    </Typography>
+                  </Grid>
+                )}
+              </Grid>
             </Grid>
-            {conference.organizer && (
-              <Grid item xs={12} md={6}>
-                <Typography>
-                  <b>Organizer:</b> {conference.organizer}
-                </Typography>
-              </Grid>
-            )}
-
-            {conference.venue && (
-              <Grid item xs={12} md={6}>
-                <Typography>
-                  <b>Venue:</b> {conference.venue}
-                </Typography>
-              </Grid>
-            )}
-
-            {conference.date && (
-              <Grid item xs={12} md={6}>
-                <Typography>
-                  <b>Date:</b> {formatFirestoreTimestamp(conference.date)}
-                </Typography>
-              </Grid>
-            )}
-
-            {conference.contactPerson && (
-              <Grid item xs={12} md={6}>
-                <Typography>
-                  <b>Contact Person:</b> {conference.contactPerson}
-                </Typography>
-              </Grid>
-            )}
-
-            {conference.email && (
-              <Grid item xs={12} md={6}>
-                <Typography>
-                  <b>Email:</b> {conference.email}
-                </Typography>
-              </Grid>
-            )}
-
-            {conference.country && (
-              <Grid item xs={12} md={6}>
-                <Typography>
-                  <b>Country:</b> {conference.country}
-                </Typography>
-              </Grid>
-            )}
-
-            {conference.language && (
-              <Grid item xs={12} md={6}>
-                <Typography>
-                  <b>Language:</b> {conference.language}
-                </Typography>
-              </Grid>
-            )}
-
-            {conference && conference.Status && (
-              <Grid item xs={12} md={6}>
-                <Typography>
-                  <b>Status:</b> {conference.Status}
-                </Typography>
-              </Grid>
-            )}
-
-            {/* Divider before the description */}
-            <Grid item xs={12}>
-              <Divider sx={{ my: 2 }} />
-            </Grid>
-
-            {conference.description && (
-              <Grid item xs={12}>
-                <Typography style={{ textAlign: "justify" }}>
-                  <b>Description:</b>
-                  {/* <span dangerouslySetInnerHTML={{ __html: sanitizeAndFormatDescription(conference.description) }} /> */}
-                  {conference.description}
-                </Typography>
-              </Grid>
-            )}
           </Grid>
         </Grid>
       </Grid>
@@ -143,6 +166,8 @@ ConferenceOverviewTab.propTypes = {
     language: PropTypes.string,
     description: PropTypes.string,
     Status: PropTypes.string,
+    coverImage: PropTypes.string,
+
   }).isRequired,
 };
 

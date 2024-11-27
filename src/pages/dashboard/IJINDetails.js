@@ -64,7 +64,7 @@ const JournalOverviewTab = ({ journal }) => (
               {journal.issnOnline && (
                 <Grid item xs={12} md={6}>
                   <Typography>
-                    <b>ISSN (Online):</b> {journal.issnOnline}
+                    <b>ISSN (Onlinedfaddfgddgdgdgggdgdgdgd):</b> {journal.issnOnline}
                   </Typography>
                 </Grid>
               )}

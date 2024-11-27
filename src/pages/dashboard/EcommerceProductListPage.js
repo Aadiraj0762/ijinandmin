@@ -57,7 +57,6 @@ const PropertyTableToolbar = ({
       renderInput={(params) => <TextField {...params} fullWidth sx={{ maxWidth: { sm: 240 } }} />}
       maxDate={new Date()} // Disable future dates
     />
-
     <DatePicker
       label="To Date"
       value={toDate}
@@ -79,7 +78,6 @@ const PropertyTableToolbar = ({
         <MenuItem key={cat.id} value={cat.category}>{cat.category}</MenuItem>
       ))}
     </TextField>
-
     <TextField
       select
       label="Types"
@@ -94,7 +92,6 @@ const PropertyTableToolbar = ({
         <MenuItem key={cat.id} value={cat.propertyType}>{cat.propertyType}</MenuItem>
       ))}
     </TextField>
-
     {isFiltered && (
       <Button
         color="error"
@@ -107,7 +104,6 @@ const PropertyTableToolbar = ({
     )}
   </Stack>
 );
-
 PropertyTableToolbar.propTypes = {
   isFiltered: PropTypes.bool,
   fromDate: PropTypes.instanceOf(Date),
@@ -122,7 +118,6 @@ PropertyTableToolbar.propTypes = {
   handleFilterCategory: PropTypes.func,
   handleFilterTypes: PropTypes.func,
 };
-
 const PropertyTable = () => {
   const [properties, setProperties] = useState([]);
   const [selectedProperties, setSelectedProperties] = useState([]);
@@ -136,7 +131,6 @@ const PropertyTable = () => {
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
-
   const [openPopover2, setOpenPopover2] = useState(null);
   const [category, setCategory] = useState('');
   const [type, setType] = useState('');
@@ -146,22 +140,17 @@ const PropertyTable = () => {
   ]);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const propertiesData = await getAllJournals();
         setProperties(propertiesData);
-
       } catch (error) {
         console.error('Error fetching properties or categories:', error);
       }
     };
-
     fetchData();
   }, []);
-
   const handleCheckboxChange = (propertyId) => {
     if (propertyId === 'all') {
       if (selectedProperties.length === properties.length) {
@@ -171,10 +160,8 @@ const PropertyTable = () => {
       }
       return;
     }
-
     const selectedIndex = selectedProperties.indexOf(propertyId);
     let newSelected = [];
-
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selectedProperties, propertyId);
     } else if (selectedIndex === 0) {
@@ -187,50 +174,43 @@ const PropertyTable = () => {
         selectedProperties.slice(selectedIndex + 1)
       );
     }
-
     setSelectedProperties(newSelected);
   };
-
   const isSelected = (propertyId) => selectedProperties.indexOf(propertyId) !== -1;
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
   };
-
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
   };
-
   const handleOpenPopover = (event, propertyId) => {
     setSelectedPropertyId(propertyId);
     setOpenPopover(event.currentTarget);
   };
-  const handleOpenPopover2 = (event, propertyId) => {
-    setSelectedPropertyId(propertyId);
-    setOpenPopover2(event.currentTarget);
+  const handleOpenPopover2 = (event, userId) => {
+    setSelectedUserId(userId); // Set the selected user ID
+    console.log("Selected User ID:", userId); // Log the selected ID for debugging
+    setOpenPopover2(event.currentTarget); // Set the anchor element for the popover
   };
+  
+
   const handleClosePopover = () => {
     setOpenPopover(null);
     setOpenPopover2(null);
-
   };
-
   const handleDeleteproperties = async () => {
     if (selectedPropertyId) {
       try {
         await deleteJournal(selectedPropertyId);
         console.log("Property deleted successfully");
         enqueueSnackbar('Property deleted successfully', { variant: 'success' });
-
         // Handle additional logic after successful deletion
         setProperties(properties.filter(property => property.id !== selectedPropertyId));
         handleCloseConfirm();
@@ -243,7 +223,6 @@ const PropertyTable = () => {
       enqueueSnackbar('No property ID selected for deletion', { variant: 'warning' });
     }
   };
-
   const handleViewRow = (id) => {
     console.log('Property Id:', id); // Check if propertiesId is received correctly
     navigate(PATH_DASHBOARD.eCommerce.view((id)));
@@ -256,12 +235,10 @@ const PropertyTable = () => {
     setFromDate(date);
     setIsFiltered(true);
   };
-
   const handleFilterToDate = (date) => {
     setToDate(date);
     setIsFiltered(true);
   };
-
   const handleFilterCategory = (event) => {
     setCategory(event.target.value);
     setIsFiltered(true);
@@ -270,7 +247,6 @@ const PropertyTable = () => {
     setType(event.target.value);
     setIsFiltered(true);
   };
-
   const handleResetFilter = () => {
     setFromDate(null);
     setToDate(null);
@@ -278,11 +254,9 @@ const PropertyTable = () => {
     setType('');
     setIsFiltered(false);
   };
-
   const filteredProperties = properties.filter((property) => {
     let isValid = true;
     let propertyDate = property.createdAt;
-
     // Check if propertyDate needs to be converted to a JavaScript Date object
     if (propertyDate instanceof Date) {
       // Do nothing, already a Date object
@@ -293,41 +267,21 @@ const PropertyTable = () => {
       // Convert other types to Date
       propertyDate = new Date(propertyDate);
     }
-
     if (fromDate) {
       isValid = isValid && propertyDate >= new Date(fromDate);
     }
-
     if (toDate) {
       isValid = isValid && propertyDate <= new Date(toDate);
     }
-
     if (category) {
       isValid = isValid && property.category === category;
     }
-
     if (type) {
       isValid = isValid && property.propertyType === type;
     }
-
     return isValid;
   });
 
-  const handleUserStatusChange = async (status, userId) => {
-    try {
-      await updateConferenceStatus(userId, status);
-      enqueueSnackbar(' status updated successfully');
-      const updatedUsers = users.map(user =>
-        user.id === userId ? { ...user, UserStatus: status } : user
-      );
-      setUsers(updatedUsers); // Assuming users is your state variable for user data
-    } catch (error) {
-      console.error("Error updating  status:", error);
-      enqueueSnackbar('Error updating  status', { variant: 'error' });
-    } finally {
-      handleClosePopover();
-    }
-  };
   const handleBrowseStatusChange = async (browsestatus, userId) => {
     try {
       await updateBrowseStatus(userId, browsestatus);
@@ -343,6 +297,35 @@ const PropertyTable = () => {
       handleClosePopover();
     }
   };
+  const handleUserStatusChange = async (status, id) => {
+    if (!users || !Array.isArray(users)) {
+      console.error("Error: users state is not initialized or is invalid.");
+      enqueueSnackbar("Error: Unable to update status.", { variant: "error" });
+      return;
+    }
+
+    if (!id) {
+      console.error("Error: Invalid user ID.");
+      enqueueSnackbar("Error: Unable to update status due to invalid ID.", { variant: "error" });
+      return;
+    }
+
+    try {
+      await updateConferenceStatus(id, status);
+      enqueueSnackbar("Status updated successfully");
+
+      const updatedUsers = users.map(user =>
+        user.id === id ? { ...user, UserStatus: status } : user
+      );
+      setUsers(updatedUsers);
+    } catch (error) {
+      console.error("Error updating status:", error);
+      enqueueSnackbar("Error updating status", { variant: "error" });
+    } finally {
+      handleClosePopover();
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'Approve':
@@ -357,13 +340,11 @@ const PropertyTable = () => {
   };
   const handleFeaturedStatusChange = async (id, event) => {
     const newStatus = event.target.checked;
-
     try {
       // Update Firestore
       await updatePropertyFeaturedStatus(id, newStatus);
       console.log(`Featured status updated to ${newStatus} for property ID: ${id}`);
       enqueueSnackbar('Featured status updated successfully');
-
       // Update the featured status in the state
       const updatedProperties = properties.map(property =>
         property.id === id ? { ...property, featuredStatus: newStatus } : property
@@ -372,7 +353,6 @@ const PropertyTable = () => {
     } catch (e) {
       console.error("Error updating featured status: ", e);
       enqueueSnackbar(`Error updating featured status: ${e.message}`, { variant: 'error' });
-
       // Revert the status change in case of error
       const revertedProperties = properties.map(property =>
         property.id === id ? { ...property, featuredStatus: !newStatus } : property
@@ -380,8 +360,6 @@ const PropertyTable = () => {
       setProperties(revertedProperties);
     }
   };
-
-
   return (
     <>
       <CustomBreadcrumbs
@@ -416,7 +394,6 @@ const PropertyTable = () => {
         type={type}
         handleFilterTypes={handleFilterTypes}
       /> */}
-
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -439,13 +416,11 @@ const PropertyTable = () => {
               <TableCell>BrowseStatus</TableCell>
               <TableCell>Status Action</TableCell>
               <TableCell>Edit</TableCell>
-
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredProperties.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((journal, index) => {
               const isItemSelected = isSelected(journal.id);
-
               return (
                 <TableRow
                   key={journal.id}
@@ -493,7 +468,6 @@ const PropertyTable = () => {
                       <option value='indexed'>Indexed</option>
                       <option value='master'>Master</option>
                       <option value='evaluation'>Evaluation</option>
-
                     </select>
                   </TableCell>
                   <TableCell><IconButton
@@ -502,6 +476,8 @@ const PropertyTable = () => {
                   >
                     <Iconify icon="eva:more-vertical-fill" />
                   </IconButton>
+                  {journal.UserStatus}
+
                   </TableCell>
                   <TableCell>
                     <IconButton
@@ -519,22 +495,18 @@ const PropertyTable = () => {
                     >
                       <Iconify icon="eva:trash-2-outline" />
                     </IconButton>
-
                     <IconButton
                       onClick={(event) => handleEditRow(journal.id)}
                     >
                       <Iconify icon="eva:edit-fill" />
                     </IconButton>
-
                   </TableCell>
-
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
       </TableContainer>
-
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
@@ -546,6 +518,7 @@ const PropertyTable = () => {
           </Button>
         }
       />
+      {/* // MenuPopover */}
       <MenuPopover
         open={openPopover2}
         onClose={handleClosePopover}
@@ -555,13 +528,19 @@ const PropertyTable = () => {
 
         <MenuItem
           onClick={() => {
-            handleUserStatusChange("Approve", selectedUserId);
+            if (selectedUserId) {
+              handleUserStatusChange("Approve", selectedUserId);
+            } else {
+              console.error("Error: No user selected.");
+              enqueueSnackbar("Error: Please select a valid user.", { variant: "error" });
+            }
             handleClosePopover();
           }}
         >
           <Iconify icon="eva:checkmark-circle-2-fill" style={{ color: "rgb(59, 130, 246)" }} />
           <Typography variant="inherit" style={{ color: "rgb(59, 130, 246)" }}>Approve</Typography>
         </MenuItem>
+
         <MenuItem
           onClick={() => {
             handleUserStatusChange("Rejected", selectedUserId);
@@ -582,7 +561,6 @@ const PropertyTable = () => {
         </MenuItem>
 
       </MenuPopover>
-
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -596,4 +574,3 @@ const PropertyTable = () => {
   );
 };
 export default PropertyTable;
-

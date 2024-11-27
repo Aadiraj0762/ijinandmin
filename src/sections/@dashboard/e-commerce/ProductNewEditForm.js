@@ -14,45 +14,275 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 import FormProvider, {
   RHFEditor,
   RHFSelect,
-  RHFSwitch,
   RHFTextField,
   RHFUpload
 } from '../../../components/hook-form';
 import { useSnackbar } from '../../../components/snackbar';
 import { createJournal, getJournalById, updateJournal } from '../../../controller/propertiesController';
-import PricingPage from "../../../pages/PricingPage";
-
 // ----------------------------------------------------------------------
-
 const COUNTRY_OPTIONS = [
-  { code: 'AD', label: 'Andorra', phone: '376' },
-
-  { code: 'AI', label: 'Anguilla', phone: '1-264' },
-  { code: 'AL', label: 'Albania', phone: '355' },
-  { code: 'AM', label: 'Armenia', phone: '374' },
-  { code: 'AO', label: 'Angola', phone: '244' },
-  { code: 'AQ', label: 'Antarctica', phone: '672' },
-  { code: 'AR', label: 'Argentina', phone: '54' },
-  { code: 'AS', label: 'American Samoa', phone: '1-684' },
-  { code: 'AT', label: 'Austria', phone: '43' },
-
-];
-
+    { code: 'AD', label: 'Andorra' },
+    { code: 'AE', label: 'United Arab Emirates' },
+    { code: 'AF', label: 'Afghanistan' },
+    { code: 'AG', label: 'Antigua and Barbuda' },
+    { code: 'AI', label: 'Anguilla' },
+    { code: 'AL', label: 'Albania' },
+    { code: 'AM', label: 'Armenia' },
+    { code: 'AO', label: 'Angola' },
+    { code: 'AQ', label: 'Antarctica' },
+    { code: 'AR', label: 'Argentina' },
+    { code: 'AS', label: 'American Samoa' },
+    { code: 'AT', label: 'Austria' },
+    { code: 'AU', label: 'Australia', suggested: true },
+    { code: 'AW', label: 'Aruba' },
+    { code: 'AX', label: 'Alland Islands' },
+    { code: 'AZ', label: 'Azerbaijan' },
+    { code: 'BA', label: 'Bosnia and Herzegovina' },
+    { code: 'BB', label: 'Barbados' },
+    { code: 'BD', label: 'Bangladesh' },
+    { code: 'BE', label: 'Belgium' },
+    { code: 'BF', label: 'Burkina Faso' },
+    { code: 'BG', label: 'Bulgaria' },
+    { code: 'BH', label: 'Bahrain' },
+    { code: 'BI', label: 'Burundi' },
+    { code: 'BJ', label: 'Benin' },
+    { code: 'BL', label: 'Saint Barthelemy' },
+    { code: 'BM', label: 'Bermuda' },
+    { code: 'BN', label: 'Brunei Darussalam' },
+    { code: 'BO', label: 'Bolivia' },
+    { code: 'BR', label: 'Brazil' },
+    { code: 'BS', label: 'Bahamas' },
+    { code: 'BT', label: 'Bhutan' },
+    { code: 'BV', label: 'Bouvet Island' },
+    { code: 'BW', label: 'Botswana' },
+    { code: 'BY', label: 'Belarus' },
+    { code: 'BZ', label: 'Belize' },
+    { code: 'CA', label: 'Canada', suggested: true },
+    { code: 'CC', label: 'Cocos (Keeling) Islands' },
+    { code: 'CD', label: 'Congo, Democratic Republic of the' },
+    { code: 'CF', label: 'Central African Republic' },
+    { code: 'CG', label: 'Congo, Republic of the' },
+    { code: 'CH', label: 'Switzerland' },
+    { code: 'CI', label: "Cote d'Ivoire" },
+    { code: 'CK', label: 'Cook Islands' },
+    { code: 'CL', label: 'Chile' },
+    { code: 'CM', label: 'Cameroon' },
+    { code: 'CN', label: 'China' },
+    { code: 'CO', label: 'Colombia' },
+    { code: 'CR', label: 'Costa Rica' },
+    { code: 'CU', label: 'Cuba' },
+    { code: 'CV', label: 'Cape Verde' },
+    { code: 'CW', label: 'Curacao' },
+    { code: 'CX', label: 'Christmas Island' },
+    { code: 'CY', label: 'Cyprus' },
+    { code: 'CZ', label: 'Czech Republic' },
+    { code: 'DE', label: 'Germany', suggested: true },
+    { code: 'DJ', label: 'Djibouti' },
+    { code: 'DK', label: 'Denmark' },
+    { code: 'DM', label: 'Dominica' },
+    { code: 'DO', label: 'Dominican Republic' },
+    { code: 'DZ', label: 'Algeria' },
+    { code: 'EC', label: 'Ecuador' },
+    { code: 'EE', label: 'Estonia' },
+    { code: 'EG', label: 'Egypt' },
+    { code: 'EH', label: 'Western Sahara' },
+    { code: 'ER', label: 'Eritrea' },
+    { code: 'ES', label: 'Spain' },
+    { code: 'ET', label: 'E thiopia' },
+    { code: 'FI', label: 'Finland' },
+    { code: 'FJ', label: 'Fiji' },
+    { code: 'FK', label: 'Falkland Islands (Malvinas)' },
+    { code: 'FM', label: 'Micronesia, Federated States of' },
+    { code: 'FO', label: 'Faroe Islands' },
+    { code: 'FR', label: 'France', suggested: true },
+    { code: 'GA', label: 'Gabon' },
+    { code: 'GB', label: 'United Kingdom' },
+    { code: 'GD', label: 'Grenada' },
+    { code: 'GE', label: 'Georgia' },
+    { code: 'GF', label: 'French Guiana' },
+    { code: 'GG', label: 'Guernsey' },
+    { code: 'GH', label: 'Ghana' },
+    { code: 'GI', label: 'Gibraltar' },
+    { code: 'GL', label: 'Greenland' },
+    { code: 'GM', label: 'Gambia' },
+    { code: 'GN', label: 'Guinea' },
+    { code: 'GP', label: 'Guadeloupe' },
+    { code: 'GQ', label: 'Equatorial Guinea' },
+    { code: 'GR', label: 'Greece' },
+    { code: 'GS', label: 'South Georgia and the South Sandwich Islands' },
+    { code: 'GT', label: 'Guatemala' },
+    { code: 'GU', label: 'Guam' },
+    { code: 'GW', label: 'Guinea-Bissau' },
+    { code: 'GY', label: 'Guyana' },
+    { code: 'HK', label: 'Hong Kong' },
+    { code: 'HM', label: 'Heard Island and McDonald Islands' },
+    { code: 'HN', label: 'Honduras' },
+    { code: 'HR', label: 'Croatia' },
+    { code: 'HT', label: 'Haiti' },
+    { code: 'HU', label: 'Hungary' },
+    { code: 'ID', label: 'Indonesia' },
+    { code: 'IE', label: 'Ireland' },
+    { code: 'IL', label: 'Israel' },
+    { code: 'IM', label: 'Isle of Man' },
+    { code: 'IN', label: 'India' },
+    { code: 'IO', label: 'British Indian Ocean Territory' },
+    { code: 'IQ', label: 'Iraq' },
+    { code: 'IR', label: 'Iran, Islamic Republic of' },
+    { code: 'IS', label: 'Iceland' },
+    { code: 'IT', label: 'Italy' },
+    { code: 'JE', label: 'Jersey' },
+    { code: 'JM', label: 'Jamaica' },
+    { code: 'JO', label: 'Jordan' },
+    { code: 'JP', label: 'Japan', suggested: true },
+    { code: 'KE', label: 'Kenya' },
+    { code: 'KG', label: 'Kyrgyzstan' },
+    { code: 'KH', label: 'Cambodia' },
+    { code: 'KI', label: 'Kiribati' },
+    { code: 'KM', label: 'Comoros' },
+    { code: 'KN', label: 'Saint Kitts and Nevis' },
+    { code: 'KP', label: "Korea, Democratic People's Republic of" },
+    { code: 'KR', label: 'Korea, Republic of' },
+    { code: 'KW', label: 'Kuwait' },
+    { code: 'KY', label: 'Cayman Islands' },
+    { code: 'KZ', label: 'Kazakhstan' },
+    { code: 'LA', label: "Lao People's Democratic Republic" },
+    { code: 'LB', label: 'Lebanon' },
+    { code: 'LC', label: 'Saint Lucia' },
+    { code: 'LI', label: 'Liechtenstein' },
+    { code: 'LK', label: 'Sri Lanka' },
+    { code: 'LR', label: 'Liberia' },
+    { code: 'LS', label: 'Lesotho' },
+    { code: 'LT', label: 'Lithuania' },
+    { code: 'LU', label: 'Luxembourg' },
+    { code: 'LV', label: 'Latvia' },
+    { code: 'LY', label: 'Libya' },
+    { code: 'MA', label: 'Morocco' },
+    { code: 'MC', label: 'Monaco' },
+    { code: 'MD', label: 'Moldova, Republic of' },
+    { code: 'ME', label: 'Montenegro' },
+    { code: 'MF', label: 'Saint Martin (French part)' },
+    { code: 'MG', label: 'Madagascar' },
+    { code: 'MH', label: 'Marshall Islands' },
+    { code: 'MK', label: 'Macedonia, the Former Yugoslav Republic of' },
+    { code: 'ML', label: 'Mali' },
+    { code: 'MM', label: 'Myanmar' },
+    { code: 'MN', label: 'Mongolia' },
+    { code: 'MO', label: 'Macao' },
+    { code: 'MP', label: 'Northern Mariana Islands' },
+    { code: 'MQ', label: 'Martinique' },
+    { code: 'MR', label: 'Mauritania' },
+    { code: 'MS', label: 'Montserrat' },
+    { code: 'MT', label: 'Malta' },
+    { code: 'MU', label: 'Mauritius' },
+    { code: 'MV', label: 'Maldives' },
+    { code: 'MW', label: 'Malawi' },
+    { code: 'MX', label: 'Mexico' },
+    { code: 'MY', label: 'Malaysia' },
+    { code: 'MZ', label: 'Mozambique' },
+    { code: 'NA', label: 'Namibia' },
+    { code: 'NC', label: 'New Caledonia' },
+    { code: 'NE', label: 'Niger' },
+    { code: 'NF', label: 'Norfolk Island' },
+    { code: 'NG', label: 'Nigeria' },
+    { code: 'NI', label: 'Nicaragua' },
+    { code: 'NL', label: 'Netherlands' },
+    { code: 'NO', label: 'Norway' },
+    { code: 'NP', label: 'Nepal' },
+    { code: 'NR', label: 'Nauru' },
+    { code: 'NU', label: 'Niue' },
+    { code: 'NZ', label: 'New Zealand' },
+    { code: 'OM', label: 'Oman' },
+    { code: 'PA', label: 'Panama' },
+    { code: 'PE', label: 'Peru' },
+    { code: 'PF', label: 'French Polynesia' },
+    { code: 'PG', label: 'Papua New Guinea' },
+    { code: 'PH', label: 'Philippines' },
+    { code: 'PK', label: 'Pakistan' },
+    { code: 'PL', label: 'Poland' },
+    { code: 'PM', label: 'Saint Pierre and Miquelon' },
+    { code: 'PN', label: 'Pitcairn' },
+    { code: 'PR', label: 'Puerto Rico' },
+    { code: 'PS', label: 'Palestine, State of' },
+    { code: 'PT', label: 'Portugal' },
+    { code: 'PW', label: 'Palau' },
+    { code: 'PY', label: 'Paraguay' },
+    { code: 'QA', label: 'Qatar' },
+    { code: 'RE', label: 'Reunion' },
+    { code: 'RO', label: 'Romania' },
+    { code: 'RS', label: 'Serbia' },
+    { code: 'RU', label: 'Russian Federation' },
+    { code: 'RW', label: 'Rwanda' },
+    { code: 'SA', label: 'Saudi Arabia' },
+    { code: 'SB', label: 'Solomon Islands' },
+    { code: 'SC', label: 'Seychelles' },
+    { code: 'SD', label: 'Sudan' },
+    { code: 'SE', label: 'Sweden' },
+    { code: 'SG', label: 'Singapore' },
+    { code: 'SH', label: 'Saint Helena' },
+    { code: 'SI', label: 'Slovenia' },
+    { code: 'SJ', label: 'Svalbard and Jan Mayen' },
+    { code: 'SK', label: 'Slovakia' },
+    { code: 'SL', label: 'Sierra Leone' },
+    { code: 'SM', label: 'San Marino' },
+    { code: 'SN', label: 'Senegal' },
+    { code: 'SO', label: 'Somalia' },
+    { code: 'SR', label: 'Suriname' },
+    { code: 'SS', label: 'South Sudan' },
+    { code: 'ST', label: 'Sao Tome and Principe' },
+    { code: 'SV', label: 'El Salvador' },
+    { code: 'SX', label: 'Sint Maarten (Dutch part)' },
+    { code: 'SY', label: 'Syrian Arab Republic' },
+    { code: 'SZ', label: 'Swaziland' },
+    { code: 'TC', label: 'Turks and Caicos Islands' },
+    { code: 'TD', label: 'Chad' },
+    { code: 'TF', label: 'French Southern Territories' },
+    { code: 'TG', label: 'Togo' },
+    { code: 'TH', label: 'Thailand' },
+    { code: 'TJ', label: 'Tajikistan' },
+    { code: 'TK', label: 'Tokelau' },
+    { code: 'TL', label: 'Timor-Leste' },
+    { code: 'TM', label: 'Turkmenistan' },
+    { code: 'TN', label: 'Tunisia' },
+    { code: 'TO', label: 'Tonga' },
+    { code: 'TR', label: 'Turkey' },
+    { code: 'TT', label: 'Trinidad and Tobago' },
+    { code: 'TV', label: 'Tuvalu' },
+    { code: 'TW', label: 'Taiwan, Province of China' },
+    { code: 'TZ', label: 'United Republic of Tanzania' },
+    { code: 'UA', label: 'Ukraine' },
+    { code: 'UG', label: 'Uganda' },
+    { code: 'US', label: 'United States', suggested: true },
+    { code: 'UY', label: 'Uruguay' },
+    { code: 'UZ', label: 'Uzbekistan' },
+    { code: 'VA', label: 'Holy See (Vatican City State)' },
+    { code: 'VC', label: 'Saint Vincent and the Grenadines' },
+    { code: 'VE', label: 'Venezuela' },
+    { code: 'VG', label: 'British Virgin Islands' },
+    { code: 'VI', label: 'US Virgin Islands' },
+    { code: 'VN', label: 'Vietnam' },
+    { code: 'VU', label: 'Vanuatu' },
+    { code: 'WF', label: 'Wallis and Futuna' },
+    { code: 'WS', label: 'Samoa' },
+    { code: 'XK', label: 'Kosovo' },
+    { code: 'YE', label: 'Yemen' },
+    { code: 'YT', label: 'Mayotte' },
+    { code: 'ZA', label: 'South Africa' },
+    { code: 'ZM', label: 'Zambia' },
+    { code: 'ZW', label: 'Zimbabwe' },
+  ];
 // Add more countries as needed
-
 const LANGUAGE_OPTIONS = [
   { label: 'English', value: 'English' },
   { label: 'Spanish', value: 'Spanish' },
   { label: 'French', value: 'French' },
   // Add more languages as needed
 ];
-
 const FREQUENCY_OPTIONS = [
   { label: 'Monthly', value: 'Monthly' },
+  { label: 'Bi-Monthly', value: 'Bi-Monthly' },
   { label: 'Quarterly', value: 'Quarterly' },
   { label: 'Annually', value: 'Annually' },
 ];
-
 const LICENSE_TYPE_OPTIONS = [
   { label: 'CC BY-SA', value: 'CC BY-SA' },
   { label: 'CC BY-NC', value: 'CC BY-NC' },
@@ -60,9 +290,7 @@ const LICENSE_TYPE_OPTIONS = [
   { label: 'CC BY-ND', value: 'CC BY-ND' },
   { label: 'CC BY-NC-ND', value: 'CC BY-NC-ND' },
 ];
-
 // ----------------------------------------------------------------------
-
 JournalForm.propTypes = {
   isEdit: PropTypes.bool,
   currentJournal: PropTypes.shape({
@@ -83,11 +311,8 @@ JournalForm.propTypes = {
     licenseType: PropTypes.string.isRequired,
     coverImage: PropTypes.arrayOf(PropTypes.string).isRequired,
     description: PropTypes.string,
-    normalProcessing: PropTypes.bool,
-    fastTrackProcessing: PropTypes.bool,
   }),
 };
-
 function countryToFlag(isoCode) {
   return typeof String.fromCodePoint !== 'undefined'
     ? isoCode
@@ -95,13 +320,11 @@ function countryToFlag(isoCode) {
       .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
     : isoCode;
 }
-
 export default function
   JournalForm({ isEdit, currentJournal }) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
-
   const JournalSchema = Yup.object().shape({
     title: Yup.string().required('Journal Title is required'),
     abbreviation: Yup.string(),
@@ -120,12 +343,8 @@ export default function
     licenseType: Yup.string().required('License Type is required'),
     // coverImage: Yup.mixed(),
     coverImage: Yup.array().min(1, 'At least one image is required'),
-
     description: Yup.string().max(20000, 'Description must not exceed 200 words'),
-    normalProcessing: Yup.boolean(),
-    fastTrackProcessing: Yup.boolean(),
   });
-
   const defaultValues = useMemo(
     () => ({
       title: currentJournal?.title || '',
@@ -145,17 +364,13 @@ export default function
       licenseType: currentJournal?.licenseType || LICENSE_TYPE_OPTIONS[0].value,
       coverImage: [],
       description: currentJournal?.description || '',
-      normalProcessing: currentJournal?.normalProcessing || false,
-      fastTrackProcessing: currentJournal?.fastTrackProcessing || false,
     }),
     [currentJournal]
   );
-
   const methods = useForm({
     resolver: yupResolver(JournalSchema),
     defaultValues,
   });
-
   const {
     reset, watch, setValue, handleSubmit, control, formState: { isSubmitting },
   } = methods;
@@ -167,7 +382,6 @@ export default function
           const journal = await getJournalById(id);
           if (journal) {
             console.log('Fetched Journal Data:', journal);
-
             reset({
               title: journal?.title || '',
               abbreviation: journal?.abbreviation || '',
@@ -186,12 +400,8 @@ export default function
               licenseType: journal?.licenseType || LICENSE_TYPE_OPTIONS[0].value,
               coverImage: journal?.coverImage || [],
               // images: property.PropertyImages || [], // Ensure this matches the form field name
-
               description: journal?.description || '',
-              normalProcessing: journal?.normalProcessing || false,
-              fastTrackProcessing: journal?.fastTrackProcessing || false,
             });
-
             console.log('Form has been reset with fetched journal data');
           } else {
             enqueueSnackbar('Journal not found', { variant: 'error' });
@@ -203,10 +413,8 @@ export default function
         }
       }
     };
-
     fetchJournal();
   }, [id, isEdit, reset, enqueueSnackbar, navigate]);
-
   useEffect(() => {
     if (isEdit && currentJournal) {
       reset(defaultValues);
@@ -215,7 +423,6 @@ export default function
       reset(defaultValues);
     }
   }, [isEdit, currentJournal, reset, defaultValues]);
-
   const onSubmit = async (data) => {
     console.log("Submitting Data:", data);  // Ensure this is printed in the console
     try {
@@ -232,7 +439,6 @@ export default function
       enqueueSnackbar('An error occurred. Please try again.', { variant: 'error' });
     }
   };
-
   const handleDrop = useCallback(
     (acceptedFiles) => {
       console.log('Files dropped:', acceptedFiles);  // Add this line to check if files are being handled
@@ -246,13 +452,10 @@ export default function
     },
     [setValue, values.coverImage]
   );
-
-
   const handleRemoveFile = (inputFile) => {
     const filtered = values.images && values.coverImage?.filter((file) => file !== inputFile);
     setValue('coverImage', filtered);
   };
-
   const handleRemoveAllFiles = () => {
     setValue('coverImage', []);
   };
@@ -298,7 +501,6 @@ export default function
                   <Grid item xs={12} sm={6}>
                     <RHFTextField name="email" label="Email Id" fullWidth />
                   </Grid>
-
                   <Grid item xs={12} sm={6}>
                     {/* <Block title="Country Select"> */}
                     <RHFSelect native name="country" label="Country" fullWidth>
@@ -309,14 +511,11 @@ export default function
                         </option>
                       ))}
                     </RHFSelect>
-
                     {/* </Block> */}
                   </Grid>
-
                   <Grid item xs={12} sm={6}>
                     <RHFTextField name="language" label="Langauge" fullWidth />
                   </Grid>
-
                   <Grid item xs={12} sm={6}>
                     <RHFSelect native name="frequency" label="Frequency" fullWidth>
                       <option value="" />
@@ -327,14 +526,12 @@ export default function
                       ))}
                     </RHFSelect>
                   </Grid>
-
                   <Grid item xs={12} sm={6}>
                     <RHFTextField name="yearOfStarting" label="Year of Starting" type="number" fullWidth />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <RHFTextField name="articleFormat" label="Article Format" fullWidth />
+                    <RHFTextField name="articleFormat" label="Indexing Since" fullWidth />
                   </Grid>
-
                   <Grid item xs={12} sm={6}>
                     <RHFSelect native name="licenseType" label="License Type" fullWidth>
                       <option value="" />
@@ -345,7 +542,6 @@ export default function
                       ))}
                     </RHFSelect>
                   </Grid>
-
                   <Grid item xs={12} md={12}>
                     <Typography variant="title" style={{ fontWeight: "bold" }}>
                       Cover Image
@@ -362,22 +558,17 @@ export default function
                       onUpload={() => console.log('ON UPLOAD')}
                     />
                   </Grid>
-
                   <Grid item xs={12} md={12}>
                     <Typography variant="title" style={{ fontWeight: "bold" }}>
                       Description
                     </Typography>
                     <RHFEditor simple name="description" />
                   </Grid>
-
-                  
                   <Grid container spacing={2} justifyContent="flex-end" style={{marginTop:"20px"}}>
-
                     <Grid item>
                       <LoadingButton type="submit" variant="contained" size="large">
                         {!isEdit ? 'Save' : 'Save Changes'}
                       </LoadingButton>
-
                     </Grid>
                     <Grid item>
                       <LoadingButton
@@ -390,8 +581,6 @@ export default function
                       </LoadingButton>
                     </Grid>
                   </Grid>
-
-
                 </Grid>
               </Stack>
             </Card>
@@ -402,3 +591,31 @@ export default function
           </>
   );
 }
+
+
+
+
+
+
+// const handleFeaturedStatusChange = async (id, event) => {
+//   const newStatus = event.target.checked;
+//   try {
+//     // Update Firestore
+//     await updatePropertyFeaturedStatus(id, newStatus);
+//     console.log(`Featured status updated to ${newStatus} for property ID: ${id}`);
+//     enqueueSnackbar('Featured status updated successfully');
+//     // Update the featured status in the state
+//     const updatedProperties = properties.map(property =>
+//       property.id === id ? { ...property, featuredStatus: newStatus } : property
+//     );
+//     setProperties(updatedProperties);
+//   } catch (e) {
+//     console.error("Error updating featured status: ", e);
+//     enqueueSnackbar(`Error updating featured status: ${e.message}`, { variant: 'error' });
+//     // Revert the status change in case of error
+//     const revertedProperties = properties.map(property =>
+//       property.id === id ? { ...property, featuredStatus: !newStatus } : property
+//     );
+//     setProperties(revertedProperties);
+//   }
+// };

@@ -14,11 +14,11 @@ import { useSettingsContext } from '../../components/settings';
 import { SkeletonPostDetails } from '../../components/skeleton';
 // sections
 import {
-    BlogPostCard,
-    BlogPostCommentForm,
-    BlogPostCommentList,
-    BlogPostHero,
-    BlogPostTags,
+  BlogPostCard,
+  BlogPostCommentForm,
+  BlogPostCommentList,
+  BlogPostHero,
+  BlogPostTags,
 } from '../../sections/@dashboard/blog';
 
 // ----------------------------------------------------------------------
@@ -81,10 +81,10 @@ export default function BlogPostPage() {
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Post Details"
+          heading="Post Detailsfffffeferferferr"
           links={[
             {
-              name: 'Dashboard',
+              name: 'Dashboard dvddxvdvrddfdf',
               href: PATH_DASHBOARD.root,
             },
             {
@@ -183,7 +183,7 @@ export default function BlogPostPage() {
         {!!recentPosts.length && (
           <>
             <Typography variant="h4" sx={{ my: 5 }}>
-              Recent posts
+              Recent posts ssvdsddsaaxzdss
             </Typography>
 
             <Box

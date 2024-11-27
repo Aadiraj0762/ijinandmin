@@ -257,11 +257,10 @@ const PropertyTable = () => {
                                     hover
                                     role="checkbox"
                                     aria-checked={isItemSelected}
-                                    selected={isItemSelected}
-                                    onClick={(event) => handleViewRow(journal.id)}
-                                >
+                                    selected={isItemSelected}                                >
                                     <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                                    <TableCell>{journal.title}</TableCell>
+                                    <TableCell onClick={(event) => handleViewRow(journal.id)}
+                                    >{journal.title}</TableCell>
                                     <TableCell>{journal.organizer}</TableCell>
                                     <TableCell>{journal.venue}</TableCell>
                                     <TableCell>{journal.country}</TableCell>

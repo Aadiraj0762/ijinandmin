@@ -142,13 +142,12 @@ export const updatePropertyFeaturedStatus = async (id, featuredStatus) => {
   }
 };
 
-// Update User status
 // Fetch a conference entry by ID
-export const updateConferenceStatus = async (UserId, status) => {
+export const updateConferenceStatus = async (id, status) => {
   try {
-    const docRef = firestoreDoc(firestore, collectionName, UserId);
+    const docRef = firestoreDoc(firestore, collectionName, id);
     await updateDoc(docRef, { UserStatus: status });
-    console.log(`User status updated to ${status} for User ID: ${UserId}`);
+    console.log(`User status updated to ${status} for User ID: ${id}`);
   } catch (e) {
     console.error("Error updating User status: ", e);
     throw new Error(e.message);
@@ -165,3 +164,5 @@ export const updateBrowseStatus = async (UserId, browsestatus) => {
     throw new Error(e.message);
   }
 };
+
+

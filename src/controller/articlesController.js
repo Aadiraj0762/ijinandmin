@@ -5,16 +5,20 @@ import firestore from '../config-global';
 // Collection name
 const conferenceCollectionName = 'conferences';
 
-const uploadConferenceFile = async (file, folder = 'conference_assets') => {
+
+const uploadFiles = async (files, folder = 'conference_assets') => {
   const storage = getStorage();
-  const storageRef = ref(storage, `${folder}/${file.name}`);
-  const snapshot = await uploadBytes(storageRef, file);
-  return getDownloadURL(snapshot.ref);
+  const uploadPromises = files.map(async (file) => {
+    const storageRef = ref(storage, `${folder}/${file.name}`);
+    const snapshot = await uploadBytes(storageRef, file);
+    return getDownloadURL(snapshot.ref);
+  });
+  return Promise.all(uploadPromises);
 };
 
 // Create a new conference entry
 export const createConference = async (conferenceData) => {
-  try {
+  try {       
     const completeConferenceData = {
       title: conferenceData.title,
       organizer: conferenceData.organizer || '',
@@ -28,9 +32,9 @@ export const createConference = async (conferenceData) => {
     };
 
     // Handle any file upload (if applicable)
-    if (conferenceData.assetFile) {
-      const assetFileUrl = await uploadConferenceFile(conferenceData.assetFile, 'conference_assets');
-      completeConferenceData.assetFile = assetFileUrl;
+    if (conferenceData.coverImage) {
+      const coverImageUrl = await uploadFiles(conferenceData.coverImage, 'conference_assets');
+      completeConferenceData.coverImage = coverImageUrl;
     }
 
     const docRef = await addDoc(collection(firestore, conferenceCollectionName), completeConferenceData);
@@ -48,9 +52,9 @@ export const updateConference = async (id, updatedData) => {
     const docRef = firestoreDoc(firestore, conferenceCollectionName, id);
 
     // Handle any file upload (if applicable)
-    if (updatedData.assetFile) {
-      const assetFileUrl = await uploadConferenceFile(updatedData.assetFile, 'conference_assets');
-      updatedData.assetFile = assetFileUrl;
+    if (updatedData.coverImage) {
+      const coverImageUrl = await uploadFiles(updatedData.coverImage, 'conference_assets');
+      updatedData.coverImage = coverImageUrl;
     }
 
     // Ensure no invalid characters in field names and remove undefined values
@@ -103,7 +107,7 @@ export const getAllConferences = async () => {
         country: data.country || '',  // Ensure the country field is captured
         language: data.language || '',
         description: data.description || '',
-        assetFile: data.assetFile || null
+        coverImage: data.coverImage || null
       };
     });
     return conferences;
@@ -135,7 +139,7 @@ export const getConferenceById = async (id) => {
     }
 
     // Extracting the necessary fields, including country and date
-    const { title, organizer, venue, date, contactPerson, email, country, language, description, assetFile } = docSnap.data();
+    const { title, organizer, venue, date, contactPerson, email, country, language, description, coverImage } = docSnap.data();
 
     return {
       id: docSnap.id,
@@ -148,7 +152,7 @@ export const getConferenceById = async (id) => {
       country: country || '',  // Ensure the country field is captured
       language: language || '',
       description: description || '',
-      assetFile: assetFile || null
+      coverImage: coverImage || null
     };
   } catch (e) {
     console.error("Error getting conference document: ", e);
