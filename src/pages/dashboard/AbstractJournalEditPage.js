@@ -43,7 +43,6 @@ export default function EcommerceProductEditPage() {
         />
         <AbstractJournals isEdit />
 
-        {/* <AbstractJournals isEdit currentProduct={currentProduct} /> */}
       </Container>
     </>
   );

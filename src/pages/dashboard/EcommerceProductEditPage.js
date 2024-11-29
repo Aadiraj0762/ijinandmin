@@ -24,13 +24,6 @@ export default function EcommerceProductEditPage() {
 
   const { name } = useParams();
 
-  const currentProduct = useSelector((state) =>
-    state.product.products.find((product) => paramCase(product.name) === name)
-  );
-
-  useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
 
   return (
     <>
@@ -47,11 +40,10 @@ export default function EcommerceProductEditPage() {
               name: 'Journal',
               href: PATH_DASHBOARD.eCommerce.root,
             },
-            { name: currentProduct?.name },
           ]}
         />
 
-        <ProductNewEditForm isEdit currentProduct={currentProduct} />
+        <ProductNewEditForm isEdit  />
       </Container>
     </>
   );

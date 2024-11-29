@@ -24,13 +24,7 @@ export default function EcommerceProductEditPage() {
 
   const { name } = useParams();
 
-  const currentProduct = useSelector((state) =>
-    state.product.products.find((product) => paramCase(product.name) === name)
-  );
 
-  useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
 
   return (
     <>
@@ -47,11 +41,10 @@ export default function EcommerceProductEditPage() {
               name: 'Journal',
               href: PATH_DASHBOARD.conference.root,
             },
-            { name: currentProduct?.name },
           ]}
         />
 
-        <AbstractConference isEdit currentProduct={currentProduct} />
+        <AbstractConference isEdit  />
       </Container>
     </>
   );
