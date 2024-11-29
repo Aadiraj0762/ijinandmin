@@ -191,7 +191,7 @@ export default function ThesisForm({ isEdit, currentThesis }) {
                 <Grid container spacing={2} justifyContent="flex-end" sx={{mt:2}}>
                   <Grid item>
                     <LoadingButton type="submit" variant="contained" size="large">
-                      {!isEdit ? 'Create Thesis' : 'Save Changes'}
+                      {!isEdit ? 'Save' : 'Save Changes'}
                     </LoadingButton>
                   </Grid>
                   <Grid item>

@@ -347,10 +347,10 @@ const PropertyTable = () => {
                     role="checkbox"
                     aria-checked={isItemSelected}
                     selected={isItemSelected}
-                    onClick={(event) => handleViewRow(journal.id)}
+                    
                   >
                     <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                    <TableCell>{journal.title}</TableCell>
+                    <TableCell onClick={(event) => handleViewRow(journal.id)}>{journal.title}</TableCell>
                     <TableCell>{journal.authorName}</TableCell>
                     <TableCell>{journal.conferenceName}</TableCell>
                     <TableCell>{journal.affiliation}</TableCell>

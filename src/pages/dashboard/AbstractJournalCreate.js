@@ -14,7 +14,7 @@ export default function ConferenceCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Ecommerce: Create a new product | INTERNATIONAL JOURNAL INDEXING</title>
+        <title> Abstract: Create a new Abstract | INTERNATIONAL JOURNAL INDEXING</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

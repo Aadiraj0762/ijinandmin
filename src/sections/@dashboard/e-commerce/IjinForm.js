@@ -281,7 +281,7 @@ export default function
 
                     <Grid item>
                       <LoadingButton type="submit" variant="contained" size="large">
-                        {!isEdit ? 'Create Journal' : 'Save Changes'}
+                        {!isEdit ? 'Save' : 'Save Changes'}
                       </LoadingButton>
 
                     </Grid>
