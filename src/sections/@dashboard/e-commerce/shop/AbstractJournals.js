@@ -398,7 +398,7 @@ export default function ConferenceForm({ isEdit, currentConference }) {
               pageNumber: conference.pageNumber || '',
             });
           } else {
-            enqueueSnackbar('Conference not found', { variant : 'error' });
+            enqueueSnackbar('Conference not found', { variant: 'error' });
             navigate('/');
           }
         } catch (error) {
@@ -426,7 +426,7 @@ export default function ConferenceForm({ isEdit, currentConference }) {
       }
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
-      navigate(PATH_DASHBOARD.conference.list);
+      navigate('/dashboard/abstractjournal/');
     } catch (error) {
       console.error('Submission error:', error);
       enqueueSnackbar('An error occurred. Please try again.', { variant: 'error' });
@@ -525,7 +525,7 @@ export default function ConferenceForm({ isEdit, currentConference }) {
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <RHFTextField name="linkDOI" label="Link/DOI" />
- </Grid>
+                  </Grid>
                   <Grid item xs={12} sm={6}>
                     <RHFTextField name="articleType" label="Article Type" />
                   </Grid>

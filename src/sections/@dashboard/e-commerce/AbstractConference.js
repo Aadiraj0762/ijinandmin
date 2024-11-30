@@ -347,7 +347,7 @@ export default function ConferenceForm({ isEdit, currentConference }) {
             reset(conference); // Reset with fetched conference data
           } else {
             enqueueSnackbar('Conference not found', { variant: 'error' });
-            navigate(PATH_DASHBOARD.conference.list);
+            navigate('/dashboard/abstractconference/');
           }
         } catch (error) {
           console.error('Error fetching conference:', error);

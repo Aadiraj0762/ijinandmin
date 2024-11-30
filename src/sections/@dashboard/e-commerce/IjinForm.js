@@ -152,7 +152,7 @@ export default function
             console.log('Form has been reset with fetched journal data');
           } else {
             enqueueSnackbar('Journal not found', { variant: 'error' });
-            navigate(PATH_DASHBOARD.eCommerce.list);
+            navigate('/dashboard/ijin/list');
           }
         } catch (error) {
           console.error('Error fetching journal:', error);

@@ -380,20 +380,7 @@ const PropertyTable = () => {
           </Button>
         }
       />
-      {/* <PropertyTableToolbar
-        isFiltered={isFiltered}
-        fromDate={fromDate}
-        toDate={toDate}
-        onFilterFromDate={handleFilterFromDate}
-        onFilterToDate={handleFilterToDate}
-        onResetFilter={handleResetFilter}
-        categories={categories} // Pass the fetched categories here
-        category={category}
-        handleFilterCategory={handleFilterCategory}
-        types={types} // Pass the fetched categories here
-        type={type}
-        handleFilterTypes={handleFilterTypes}
-      /> */}
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -414,7 +401,6 @@ const PropertyTable = () => {
               <TableCell>Featured Status</TableCell>
               <TableCell>View</TableCell>
               <TableCell>BrowseStatus</TableCell>
-              <TableCell>Status Action</TableCell>
               <TableCell>Edit</TableCell>
             </TableRow>
           </TableHead>
@@ -470,15 +456,7 @@ const PropertyTable = () => {
                       <option value='evaluation'>Evaluation</option>
                     </select>
                   </TableCell>
-                  <TableCell><IconButton
-                    color={openPopover2 ? 'primary' : 'default'}
-                    onClick={(event) => handleOpenPopover2(event, journal.id)}
-                  >
-                    <Iconify icon="eva:more-vertical-fill" />
-                  </IconButton>
-                  {journal.UserStatus}
-
-                  </TableCell>
+                  
                   <TableCell>
                     <IconButton
                       onClick={() => {
