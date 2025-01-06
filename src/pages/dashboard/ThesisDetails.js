@@ -77,7 +77,7 @@ const PropertyTable = () => {
 
 
     const handleViewRow = (id) => {
-        navigate(`/dashboard/conference/${id}`);
+        navigate(`/dashboard/thesis/${id}`);
     };
     const handleEditRow = (id) => {
         navigate(`/dashboard/thesis/${id}/edit`);

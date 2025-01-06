@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc as firestoreDoc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc as firestoreDoc, getDoc, getDocs, updateDoc,query, where } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import firestore from '../config-global';
 
@@ -47,23 +47,67 @@ export const createConference = async (conferenceData) => {
 };
 
 // Update a conference entry
+// export const updateConference = async (id, updatedData) => {
+//   try {
+//     const docRef = firestoreDoc(firestore, conferenceCollectionName, id);
+
+//     // Handle any file upload (if applicable)
+//     if (updatedData.coverImage) {
+//       const coverImageUrl = await uploadFiles(updatedData.coverImage, 'conference_assets');
+//       updatedData.coverImage = coverImageUrl;
+//     }
+
+//     // Ensure no invalid characters in field names and remove undefined values
+//     const sanitizedData = {};
+//     Object.keys(updatedData).forEach(key => {
+//       const value = updatedData[key];
+
+//       if (value !== undefined) {  // Filter out undefined values
+//         // Replace invalid characters or handle accordingly
+//         const sanitizedKey = key.replace(/[~*/[\]]/g, '_').replace(/\s+/g, '_');
+//         sanitizedData[sanitizedKey] = value;
+//       }
+//     });
+
+//     await updateDoc(docRef, sanitizedData);
+//     console.log("Conference document updated with ID: ", id);
+//     return { id, ...sanitizedData };
+//   } catch (e) {
+//     console.error("Error updating conference document: ", e);
+//     throw new Error(e.message);
+//   }
+// };
+
+// ---------------------------------------------  New Updated Function -------------------------------------------------------------------------------
+
 export const updateConference = async (id, updatedData) => {
   try {
     const docRef = firestoreDoc(firestore, conferenceCollectionName, id);
 
-    // Handle any file upload (if applicable)
-    if (updatedData.coverImage) {
+    // Retrieve the existing document to get current coverImage if not provided in updatedData
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const existingData = docSnap.data();
+      if (!updatedData.coverImage || updatedData.coverImage.length === 0) {
+        // Preserve the current coverImage if no new image is uploaded
+        updatedData.coverImage = existingData.coverImage || [];
+      }
+    } else {
+      throw new Error("Document not found");
+    }
+
+    // Handle cover image upload if a new image is provided
+    if (updatedData.coverImage && Array.isArray(updatedData.coverImage) && updatedData.coverImage.length > 0 && typeof updatedData.coverImage[0] === 'object') {
+      // Assuming new files are objects (e.g., File instances), upload them
       const coverImageUrl = await uploadFiles(updatedData.coverImage, 'conference_assets');
       updatedData.coverImage = coverImageUrl;
     }
 
     // Ensure no invalid characters in field names and remove undefined values
     const sanitizedData = {};
-    Object.keys(updatedData).forEach(key => {
+    Object.keys(updatedData).forEach((key) => {
       const value = updatedData[key];
-
-      if (value !== undefined) {  // Filter out undefined values
-        // Replace invalid characters or handle accordingly
+      if (value !== undefined) {
         const sanitizedKey = key.replace(/[~*/[\]]/g, '_').replace(/\s+/g, '_');
         sanitizedData[sanitizedKey] = value;
       }
@@ -159,3 +203,24 @@ export const getConferenceById = async (id) => {
     throw new Error(e.message);
   }
 };
+
+
+export const getApprovedConferences = async () => {
+  try {
+    const collectionRef = collection(firestore, conferenceCollectionName);
+    const querySnapshot = await getDocs(query(collectionRef, where("UserStatus", "==", "approved")));
+    
+    const approvedConferences = [];
+    querySnapshot.forEach((doc) => {
+      approvedConferences.push({ id: doc.id, ...doc.data() });
+    });
+
+    console.log("Approved conferences fetched successfully");
+    return approvedConferences;
+  } catch (e) {
+    console.error("Error fetching approved conferences: ", e);
+    throw new Error(e.message);
+  }
+};
+
+

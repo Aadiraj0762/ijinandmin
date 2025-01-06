@@ -53,22 +53,82 @@ export const createJournal = async (journalData) => {
   }
 };
 
+// export const updateJournal = async (id, updatedData) => {
+//   try {
+//     const docRef = firestoreDoc(firestore, collectionName, id);
+
+//     // Handle cover image upload
+//     if (updatedData.coverImage && updatedData.coverImage.length > 0) {
+//       const coverImageUrls = await uploadFiles(updatedData.coverImage, 'journal_covers');
+//       updatedData.coverImage = coverImageUrls;
+//     }
+
+// // Ensure no invalid characters in field names and remove undefined values
+//     const sanitizedData = {};
+//     Object.keys(updatedData).forEach(key => {
+//       const value = updatedData[key];
+
+//       if (value !== undefined) {  // Filter out undefined values
+//         // Replace invalid characters or handle accordingly
+//         const sanitizedKey = key.replace(/[~*/[\]]/g, '_').replace(/\s+/g, '_');
+//         sanitizedData[sanitizedKey] = value;
+//       }
+//     });
+
+//     await updateDoc(docRef, sanitizedData);
+//     console.log("Conference document updated with ID: ", id);
+//     return { id, ...sanitizedData };
+//   } catch (e) {
+//     console.error("Error updating conference document: ", e);
+//     throw new Error(e.message);
+//   }
+// };
+
+
+// ---------------------------------------------  New Updated Function -------------------------------------------------------------------------------
+
 export const updateJournal = async (id, updatedData) => {
   try {
     const docRef = firestoreDoc(firestore, collectionName, id);
 
-    // Handle cover image upload
-    if (updatedData.coverImage && updatedData.coverImage.length > 0) {
+    // Retrieve the existing document to get current coverImage if not provided in updatedData
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const existingData = docSnap.data();
+      if (!updatedData.coverImage || updatedData.coverImage.length === 0) {
+        // Preserve the current coverImage if no new image is uploaded
+        updatedData.coverImage = existingData.coverImage || [];
+      }
+    } else {
+      throw new Error("Document not found");
+    }
+
+    // Handle cover image upload if a new image is provided
+    if (updatedData.coverImage && Array.isArray(updatedData.coverImage) && updatedData.coverImage.length > 0 && typeof updatedData.coverImage[0] === 'object') {
+      // Assuming new files are objects (e.g., File instances), upload them
       const coverImageUrls = await uploadFiles(updatedData.coverImage, 'journal_covers');
       updatedData.coverImage = coverImageUrls;
     }
 
-    // other logic...
+    // Ensure no invalid characters in field names and remove undefined values
+    const sanitizedData = {};
+    Object.keys(updatedData).forEach((key) => {
+      const value = updatedData[key];
+      if (value !== undefined) {
+        const sanitizedKey = key.replace(/[~*/[\]]/g, '_').replace(/\s+/g, '_');
+        sanitizedData[sanitizedKey] = value;
+      }
+    });
+
+    await updateDoc(docRef, sanitizedData);
+    console.log("Conference document updated with ID: ", id);
+    return { id, ...sanitizedData };
   } catch (e) {
-    console.error("Error updating document: ", e);
+    console.error("Error updating conference document: ", e);
     throw new Error(e.message);
   }
 };
+
 
 // Delete a journal entry
 export const deleteJournal = async (id) => {

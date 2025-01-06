@@ -1,97 +1,3 @@
-// import {
-//     Card, CardContent, CardMedia,
-//     Grid,
-//     Link,
-//     Typography
-// } from '@mui/material';
-// import { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-
-// import { useSnackbar } from '../../components/snackbar';
-// import { getAllAbstracts } from '../../controller/abstractconferenceController';
-
-// const AbstractTable = () => {
-//     const [abstracts, setAbstracts] = useState([]);
-//     const [selectedAbstracts, setSelectedAbstracts] = useState([]);
-//     const [page, setPage] = useState(0);
-//     const [rowsPerPage, setRowsPerPage] = useState(5);
-
-//     const { enqueueSnackbar } = useSnackbar();
-//     const navigate = useNavigate();
-
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             try {
-//                 const abstractsData = await getAllAbstracts();
-//                 setAbstracts(abstractsData);
-//             } catch (error) {
-//                 console.error('Error fetching abstracts:', error);
-//             }
-//         };
-
-//         fetchData();
-//     }, []);
-
-//     const handleViewRow = (id) => {
-//         navigate(`/dashboard/abstractconference/${id}`);
-//     };
-
-//     const filteredAbstracts = abstracts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
-//     return (
-//         <Grid container spacing={3} style={{ padding: '2%', marginLeft: '10%', width: '85%' }}>
-//             {filteredAbstracts.map((abstract) => (
-//                 <Grid item xs={12} sm={6} md={3} key={abstract.id}>
-//                     <Card sx={{ maxWidth: 345, minHeight: 400, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-//                         <CardMedia
-//                             component="img"
-//                             height="140"
-//                             image={abstract.assetFile || "https://api-prod-minimal-v610.pages.dev/assets/images/cover/cover-4.webp"} // Show assetFile if available
-//                             alt={abstract.title}
-//                         />
-//                         <CardContent sx={{ flexGrow: 1 }}>
-//                             <Typography variant="h6" component="div" onClick={() => handleViewRow(abstract.id)}>
-//                                 {abstract.title}
-//                             </Typography>
-
-//                             <Grid container spacing={2}>
-//                                 <Grid item xs={6}>
-//                                     <Typography variant="body2" color="text.secondary">
-//                                         Author: {abstract.authorName}
-//                                     </Typography>
-//                                 </Grid>
-//                                 <Grid item xs={6}>
-//                                     <Typography variant="body2" color="text.secondary">
-//                                         Conference: {abstract.conferenceName}
-//                                     </Typography>
-//                                 </Grid>
-//                                 <Grid item xs={12}>
-//                                     <Typography variant="body2" color="text.secondary">
-//                                         Affiliation: {abstract.affiliation}
-//                                     </Typography>
-//                                 </Grid>
-//                             </Grid>
-
-//                             <Typography variant="body2" color="text.secondary" style={{ marginTop: '10px' }}>
-//                                 Abstract: {abstract.abstract}
-//                             </Typography>
-
-//                             {abstract.linkDOI && (
-//                                 <Typography variant="body2" color="primary" style={{ marginTop: '10px' }}>
-//                                     <Link href={abstract.linkDOI} target="_blank" rel="noopener noreferrer">
-//                                         DOI Link
-//                                     </Link>
-//                                 </Typography>
-//                             )}
-//                         </CardContent>
-//                     </Card>
-//                 </Grid>
-//             ))}
-//         </Grid>
-//     );
-// };
-
-// export default AbstractTable;
 import {
   Button,
   IconButton,
@@ -106,8 +12,10 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import DOMPurify from 'dompurify';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+
 import ConfirmDialog from '../../components/confirm-dialog';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import MenuPopover from '../../components/menu-popover';
@@ -302,6 +210,10 @@ const PropertyTable = () => {
         return 'black'; // Default color if status is not recognized
     }
   };
+  function sanitizeHTML(htmlContent) {
+    return DOMPurify.sanitize(htmlContent);
+  }
+
   return (
     <>
       <CustomBreadcrumbs
@@ -327,7 +239,6 @@ const PropertyTable = () => {
               <TableCell>Title</TableCell>
               <TableCell>Author</TableCell>
               <TableCell>Conference</TableCell>
-              <TableCell>Affiliation</TableCell>
               <TableCell>Abstract</TableCell>
               <TableCell> DOI Link</TableCell>
               {/* <TableCell>View</TableCell> */}
@@ -347,30 +258,23 @@ const PropertyTable = () => {
                     role="checkbox"
                     aria-checked={isItemSelected}
                     selected={isItemSelected}
-                    
                   >
                     <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                    <TableCell onClick={(event) => handleViewRow(journal.id)}>{journal.title}</TableCell>
-                    <TableCell>{journal.authorName}</TableCell>
+                    <TableCell onClick={(event) => handleViewRow(journal.id)}>
+                      {journal.title}
+                    </TableCell>
+                    <TableCell>{journal.authors.map((author) => author.name).join(', ')}</TableCell>
+
                     <TableCell>{journal.conferenceName}</TableCell>
-                    <TableCell>{journal.affiliation}</TableCell>
-                    <TableCell>{journal.abstract}</TableCell>
+                    <TableCell>
+                      {sanitizeHTML(journal.abstract)
+                        .replace(/<[^>]+>/g, '') // Remove HTML tags
+                        .slice(0, 100) // Limit the length to 100 characters
+                        .concat('...')}
+                    </TableCell>
+
+
                     <TableCell>{journal.linkDOI}</TableCell>
-                    {/* <TableCell>
-                                        <IconButton
-                                            onClick={(event) => handleViewRow(journal.id)}
-                                        >
-                                            <Iconify icon="eva:eye-fill" />
-                                        </IconButton>
-                                    </TableCell> */}
-                    {/* <TableCell><IconButton
-                                        color={openPopover2 ? 'primary' : 'default'}
-                                        onClick={(event) => handleOpenPopover2(event, journal.id)}
-                                    >
-                                        <Iconify icon="eva:more-vertical-fill" />
-                                    </IconButton>
-                                    </TableCell> */}
-                    {/* <TableCell style={{ color: getStatusColor(journal.UserStatus) }}>{journal.UserStatus}</TableCell> */}
 
                     <TableCell>
                       <TableCell>

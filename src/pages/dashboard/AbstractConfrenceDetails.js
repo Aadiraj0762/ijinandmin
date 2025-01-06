@@ -1,6 +1,6 @@
 import { Box, Card, Container, Divider, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-// import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -12,11 +12,9 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // Import the updated controller function
 import { getAbstractById } from '../../controller/abstractconferenceController';
 
-// const sanitizeAndFormatDescription = (description) => {
-//   if (!description) return '';
-//   const cleanText = DOMPurify.sanitize(description, { ALLOWED_TAGS: [] });
-//   return cleanText.replace(/\n/g, '<br />');
-// };
+function sanitizeHTML(htmlContent) {
+  return DOMPurify.sanitize(htmlContent);
+}
 
 // Updated AbstractOverviewTab component
 const AbstractOverviewTab = ({ abstract }) => (
@@ -53,15 +51,20 @@ const AbstractOverviewTab = ({ abstract }) => (
               </Grid>
             )}
 
-            {abstract.affiliation && (
-              <Grid item xs={12} md={6}>
-                <Typography><b>Affiliation:</b> {abstract.affiliation}</Typography>
-              </Grid>
-            )}
 
-            {abstract.authorName && (
-              <Grid item xs={12} md={6}>
-                <Typography><b>Author:</b> {abstract.authorName}</Typography>
+
+            {abstract.authors && abstract.authors.length > 0 && (
+              <Grid item xs={12}>
+                <Typography><b>Authors & Affiliation:</b></Typography>
+                <ul>
+                  {abstract.authors.map((author, index) => (
+                    <li key={index}  style={{marginLeft:"30px"}}>
+                      <Typography>
+                        {author.name} {author.affiliation && `(${author.affiliation})`}
+                      </Typography>
+                    </li>
+                  ))}
+                </ul>
               </Grid>
             )}
 
@@ -77,6 +80,11 @@ const AbstractOverviewTab = ({ abstract }) => (
               </Grid>
             )}
 
+            {abstract.keyword && (
+              <Grid item xs={12} md={6}>
+                <Typography><b>Keywords :</b> {abstract.keyword}</Typography>
+              </Grid>
+            )}
             {/* Divider before the abstract description */}
             <Grid item xs={12}>
               <Divider sx={{ my: 2 }} />
@@ -86,8 +94,7 @@ const AbstractOverviewTab = ({ abstract }) => (
               <Grid item xs={12}>
                 <Typography style={{ textAlign: "justify" }}>
                   <b>Abstract:</b>
-                  {/* <span dangerouslySetInnerHTML={{ __html: sanitizeAndFormatDescription(abstract.abstract) }} /> */}
-                  <Typography><b>Abstract:</b> {abstract.abstract}</Typography>
+                  <span dangerouslySetInnerHTML={{ __html: sanitizeHTML(abstract.abstract) }} />
 
                 </Typography>
               </Grid>
@@ -111,8 +118,13 @@ AbstractOverviewTab.propTypes = {
     conferenceName: PropTypes.string,
     issn: PropTypes.string,
     publisher: PropTypes.string,
-    affiliation: PropTypes.string,
-    authorName: PropTypes.string,
+    authors: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        affiliation: PropTypes.string,
+      })
+    ),
+    keyword: PropTypes.string,
     articleType: PropTypes.string,
     abstract: PropTypes.string,
     linkDOI: PropTypes.string,
@@ -172,7 +184,7 @@ export default function AbstractDetailsPage() {
           </Typography>
         )}
       </Container>
-      <br/>
+      <br />
     </>
   );
 }

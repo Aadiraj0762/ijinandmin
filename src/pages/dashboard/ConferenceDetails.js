@@ -1,7 +1,7 @@
 import { Box, Card, Container, Divider, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { format } from 'date-fns';
-// import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -19,16 +19,9 @@ const formatFirestoreTimestamp = (timestamp) => {
   return format(date, 'dd-MM-yyyy');
 };
 
-// const sanitizeAndFormatDescription = (description) => {
-//   if (!description) return '';
-
-//   // Remove HTML tags using DOMPurify
-//   const cleanText = DOMPurify.sanitize(description, { ALLOWED_TAGS: [] });
-
-//   // Replace line breaks with `<br />` for formatting
-//   return cleanText.replace(/\n/g, '<br />');
-// };
-
+function sanitizeHTML(htmlContent) {
+  return DOMPurify.sanitize(htmlContent);
+}
 const ConferenceOverviewTab = ({ conference }) => (
   <Card>
     <Box sx={{ p: 3, border: '1px solid #e0e0e0', borderRadius: '8px' }}>
@@ -138,10 +131,13 @@ const ConferenceOverviewTab = ({ conference }) => (
 
                 {conference.description && (
                   <Grid item xs={12}>
-                    <Typography style={{ textAlign: "justify" }}>
-                      <b>Description:</b>
-                      {/* <span dangerouslySetInnerHTML={{ __html: sanitizeAndFormatDescription(conference.description) }} /> */}
-                      {conference.description}
+                    <Typography>
+                      <b>Description:</b>{' '}
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: sanitizeHTML(conference.description),
+                        }}
+                      />
                     </Typography>
                   </Grid>
                 )}

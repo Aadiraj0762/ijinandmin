@@ -141,38 +141,45 @@ const AbstractTable = () => {
                     selected={isItemSelected}
                   >
                     <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                    <TableCell                     onClick={() => handleViewRow(abstract.id)}
-                    >{abstract.title}</TableCell>
+                    <TableCell onClick={() => handleViewRow(abstract.id)}>
+                      {abstract.title}
+                    </TableCell>
                     <TableCell>{abstract.journalName}</TableCell>
-                    <TableCell>{abstract.authorName}</TableCell>
-                    <TableCell>{abstract.publisher}</TableCell>
-                    {/* <TableCell>
-                                        <IconButton onClick={() => handleViewRow(abstract.id)}>
-                                            <Iconify icon="eva:eye-fill" />
-                                        </IconButton>
-                                    </TableCell> */}
                     <TableCell>
-                      <TableCell>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <IconButton
-                            onClick={() => {
-                              setSelectedPropertyId(abstract.id);
-                              handleOpenConfirm();
-                            }}
-                            sx={{ color: 'error.main', marginRight: 1 }}
-                          >
-                            <Iconify icon="eva:trash-2-outline" />
-                          </IconButton>
-                          <IconButton onClick={(event) => handleEditRow(abstract.id)}>
-                            <Iconify icon="eva:edit-fill" />
-                          </IconButton>
+                      {abstract.authors.map((author, authorIndex) => (
+                        <div key={authorIndex}>
+                          {author.name}
+                          {author.affiliation && (
+                            <>
+                              {' '}
+                              <span style={{ fontStyle: 'italic' }}>({author.affiliation})</span>
+                            </>
+                          )}
                         </div>
-                      </TableCell>
+                      ))}
+                    </TableCell>
+                    <TableCell>{abstract.publisher}</TableCell>
+                    <TableCell>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <IconButton
+                          onClick={() => {
+                            setSelectedPropertyId(abstract.id);
+                            handleOpenConfirm();
+                          }}
+                          sx={{ color: 'error.main', marginRight: 1 }}
+                        >
+                          <Iconify icon="eva:trash-2-outline" />
+                        </IconButton>
+                        <IconButton onClick={() => handleEditRow(abstract.id)}>
+                          <Iconify icon="eva:edit-fill" />
+                        </IconButton>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
               })}
           </TableBody>
+
         </Table>
       </TableContainer>
       <ConfirmDialog

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs/CustomBreadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 import { getJournalById } from '../../controller/propertiesController';
@@ -15,7 +16,9 @@ const formatFirestoreTimestamp = (timestamp) => {
   const date = new Date(timestamp.seconds * 1000);
   return format(date, 'dd-MM-yyyy');
 };
-
+function sanitizeHTML(htmlContent) {
+  return DOMPurify.sanitize(htmlContent);
+}
 const JournalOverviewTab = ({ journal }) => (
   <Card>
     <Box sx={{ p: 3, border: '1px solid #e0e0e0', borderRadius: '8px' }}>
@@ -172,12 +175,17 @@ const JournalOverviewTab = ({ journal }) => (
             </Grid>
 
             {journal.description && (
-              <Grid item xs={12}>
-                <Typography style={{ textAlign: "justify" }}>
-                  <b>Description:</b> {journal.description}
+            <Grid item xs={12}>
+                <Typography>
+                    <b>Description:</b>{' '}
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: sanitizeHTML(journal.description),
+                        }}
+                    />
                 </Typography>
-              </Grid>
-            )}
+            </Grid>
+        )}
           </Grid>
         </Grid>
       </Grid>

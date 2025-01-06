@@ -202,9 +202,7 @@ const PropertyTable = () => {
         switch (status) {
             case 'Approve':
                 return 'rgb(59, 130, 246)';
-            case 'Reject':
-                return 'rgb(202, 138, 4)';
-            case 'Disabled':
+            case 'DisApprove':
                 return 'red';
             default:
                 return 'black'; // Default color if status is not recognized
@@ -282,7 +280,6 @@ const PropertyTable = () => {
                                         <Iconify icon="eva:more-vertical-fill" />
                                     </IconButton>
                                     </TableCell>
-                                    {/* <TableCell style={{ color: getStatusColor(journal.UserStatus) }}>{journal.UserStatus}</TableCell> */}
 
                                     <TableCell>
                                         <IconButton
@@ -337,21 +334,12 @@ const PropertyTable = () => {
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        handleUserStatusChange("Rejected", selectedUserId);
-                        handleClosePopover();
-                    }}
-                >
-                    <Iconify icon="bi:circle" style={{ color: "rgb(202, 138, 4)" }} />
-                    <Typography variant="inherit" style={{ color: "rgb(202, 138, 4)" }}>Rejected</Typography>
-                </MenuItem>
-                <MenuItem
-                    onClick={() => {
-                        handleUserStatusChange("Disabled", selectedUserId);
+                        handleUserStatusChange("DisApprove", selectedUserId);
                         handleClosePopover();
                     }}
                 >
                     <Iconify icon="carbon:close-outline" style={{ color: "red" }} />
-                    <Typography variant="inherit" style={{ color: "rgb(239, 68, 68)" }}>Disabled</Typography>
+                    <Typography variant="inherit" style={{ color: "rgb(239, 68, 68)" }}>DisApprove</Typography>
                 </MenuItem>
 
             </MenuPopover>

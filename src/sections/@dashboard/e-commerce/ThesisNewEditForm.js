@@ -14,7 +14,6 @@ import { useSnackbar } from '../../../components/snackbar';
 import { createThesis, getThesisById, updateThesis } from '../../../controller/thesisController';
 
 // ----------------------------------------------------------------------
-
 ThesisForm.propTypes = {
   isEdit: PropTypes.bool,
   currentThesis: PropTypes.shape({
@@ -25,12 +24,10 @@ ThesisForm.propTypes = {
     fullPdf: PropTypes.arrayOf(PropTypes.string),
   }),
 };
-
 export default function ThesisForm({ isEdit, currentThesis }) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
-
   const ThesisSchema = Yup.object().shape({
     title: Yup.string().required('Thesis Title is required'),
     collegeUniversity: Yup.string().required('College/University is required'),
@@ -38,7 +35,6 @@ export default function ThesisForm({ isEdit, currentThesis }) {
     photoId: Yup.array().min(1, 'At least one photo ID is required'),
     fullPdf: Yup.array().min(1, 'At least one full PDF is required'),
   });
-
   const defaultValues = useMemo(
     () => ({
       title: currentThesis?.title || '',
@@ -49,26 +45,21 @@ export default function ThesisForm({ isEdit, currentThesis }) {
     }),
     [currentThesis]
   );
-
   const methods = useForm({
     resolver: yupResolver(ThesisSchema),
     defaultValues,
   });
-
   const {
     reset, watch, setValue, handleSubmit, formState: { isSubmitting },
   } = methods;
   const values = watch();
-
   useEffect(() => {
     console.log("useEffect is firing. ID:", id, "isEdit:", isEdit);
-    
     const fetchThesis = async () => {
       if (isEdit) {
         try {
           const thesis = await getThesisById(id);
           console.log('Fetched Thesis:', thesis);
-          
           if (thesis) {
             reset({
               title: thesis?.title || '',
@@ -78,7 +69,6 @@ export default function ThesisForm({ isEdit, currentThesis }) {
               fullPdf: thesis?.fullPdf || [],
             });
             console.log('Form reset with thesis:', thesis); // Add this to check form reset
-            
           } else {
             enqueueSnackbar('Thesis not found', { variant: 'error' });
             navigate('/dashboard/theses/list');
@@ -89,27 +79,23 @@ export default function ThesisForm({ isEdit, currentThesis }) {
         }
       }
     };
-  
     fetchThesis();
   }, [id, isEdit, reset, enqueueSnackbar, navigate]);
-  
-
   const onSubmit = async (data) => {
     try {
       if (isEdit) {
-        await updateThesis(id, data); 
+        await updateThesis(id, data);
       } else {
-        await createThesis(data); 
+        await createThesis(data);
       }
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
-      navigate('/dashboard/theses/list');
+      navigate('/dashboard/thesis-archieve/');
     } catch (error) {
       console.error("Error during submission:", error);
       enqueueSnackbar('An error occurred. Please try again.', { variant: 'error' });
     }
   };
-
   const handleDropPhotoId = useCallback(
     (acceptedFiles) => {
       const files = values.photoId || [];
@@ -122,7 +108,6 @@ export default function ThesisForm({ isEdit, currentThesis }) {
     },
     [setValue, values.photoId]
   );
-
   const handleDropFullPdf = useCallback(
     (acceptedFiles) => {
       const files = values.fullPdf || [];
@@ -135,7 +120,20 @@ export default function ThesisForm({ isEdit, currentThesis }) {
     },
     [setValue, values.fullPdf]
   );
-
+  const handleRemoveImageFile = (inputFile) => {
+    const filtered = values.images && values.photoId?.filter((file) => file !== inputFile);
+    setValue('photoId', filtered);
+  };
+  const handleRemoveAllImageFiles = () => {
+    setValue('photoId', []);
+  };
+  const handleRemoveFile = (inputFile) => {
+    const filtered = values.fullPdf && values.fullPdf?.filter((file) => file !== inputFile);
+    setValue('fullPdf', filtered);
+  };
+  const handleRemoveAllFiles = () => {
+    setValue('fullPdf', []);
+  };
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
@@ -159,7 +157,6 @@ export default function ThesisForm({ isEdit, currentThesis }) {
                 <Grid item xs={12} sm={6}>
                   <RHFTextField name="author" label="Author*" fullWidth />
                 </Grid>
-
                 <Grid item xs={12} md={12}>
                   <Typography variant="title" style={{ fontWeight: "bold" }}>
                     Photo ID
@@ -171,9 +168,10 @@ export default function ThesisForm({ isEdit, currentThesis }) {
                     maxSize={3145728}
                     accept="image/*"
                     onDrop={handleDropPhotoId}
+                    onRemove={handleRemoveImageFile}
+                    onRemoveAll={handleRemoveAllImageFiles}
                   />
                 </Grid>
-
                 <Grid item xs={12} md={12}>
                   <Typography variant="title" style={{ fontWeight: "bold" }}>
                     Full PDF
@@ -185,10 +183,12 @@ export default function ThesisForm({ isEdit, currentThesis }) {
                     maxSize={5242880} // 5MB max size
                     accept="application/pdf"
                     onDrop={handleDropFullPdf}
+                    onRemove={handleRemoveFile}
+                    onRemoveAll={handleRemoveAllFiles}
                   />
                 </Grid>
-<br/>
-                <Grid container spacing={2} justifyContent="flex-end" sx={{mt:2}}>
+                <br />
+                <Grid container spacing={2} justifyContent="flex-end" sx={{ mt: 2 }}>
                   <Grid item>
                     <LoadingButton type="submit" variant="contained" size="large">
                       {!isEdit ? 'Save' : 'Save Changes'}
@@ -210,7 +210,7 @@ export default function ThesisForm({ isEdit, currentThesis }) {
           </Card>
         </Grid>
       </Grid>
-      <br/>
+      <br />
     </FormProvider>
   );
 }
