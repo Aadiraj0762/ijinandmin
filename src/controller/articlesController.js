@@ -46,37 +46,7 @@ export const createConference = async (conferenceData) => {
   }
 };
 
-// Update a conference entry
-// export const updateConference = async (id, updatedData) => {
-//   try {
-//     const docRef = firestoreDoc(firestore, conferenceCollectionName, id);
 
-//     // Handle any file upload (if applicable)
-//     if (updatedData.coverImage) {
-//       const coverImageUrl = await uploadFiles(updatedData.coverImage, 'conference_assets');
-//       updatedData.coverImage = coverImageUrl;
-//     }
-
-//     // Ensure no invalid characters in field names and remove undefined values
-//     const sanitizedData = {};
-//     Object.keys(updatedData).forEach(key => {
-//       const value = updatedData[key];
-
-//       if (value !== undefined) {  // Filter out undefined values
-//         // Replace invalid characters or handle accordingly
-//         const sanitizedKey = key.replace(/[~*/[\]]/g, '_').replace(/\s+/g, '_');
-//         sanitizedData[sanitizedKey] = value;
-//       }
-//     });
-
-//     await updateDoc(docRef, sanitizedData);
-//     console.log("Conference document updated with ID: ", id);
-//     return { id, ...sanitizedData };
-//   } catch (e) {
-//     console.error("Error updating conference document: ", e);
-//     throw new Error(e.message);
-//   }
-// };
 
 // ---------------------------------------------  New Updated Function -------------------------------------------------------------------------------
 

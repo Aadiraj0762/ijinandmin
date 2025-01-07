@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc as firestoreDoc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc as firestoreDoc, getDoc, getDocs, query, updateDoc, where,orderBy, limit, } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import firestore from '../config-global';
 
@@ -19,21 +19,32 @@ const uploadFiles = async (files, folder = 'thesis_files') => {
 const generateThesisId = async () => {
   const thesesSnapshot = await getDocs(collection(firestore, thesisCollectionName));
   const thesisCount = thesesSnapshot.size + 1;
-  return `IJI${thesisCount.toString().padStart(7, '0')}`; // Adjust to ensure total length is 10 digits after "IJI"
+  return `IJI${thesisCount.toString().padStart(7, '0')}`; // Ensure total length is 10 digits after "IJI"
 };
 
-// Generate Volume and Year
-const generateVolume = () => {
+// Generate Volume and Year based on the latest thesis entry
+const generateVolume = async () => {
   const currentYear = new Date().getFullYear();
-  const volume = currentYear - 2023; // Volume 1 starts from 2024
-  return { volume, year: currentYear };
+  const thesisQuery = query(collection(firestore, thesisCollectionName), orderBy('year', 'desc'), limit(1));
+  const thesisSnapshot = await getDocs(thesisQuery);
+  
+  if (!thesisSnapshot.empty) {
+    const latestThesis = thesisSnapshot.docs[0].data();
+    if (latestThesis.year === currentYear) {
+      return { volume: latestThesis.volume, year: currentYear }; // Keep the same volume if the year matches
+    }
+    return { volume: latestThesis.volume + 1, year: currentYear }; // Increment volume if the year is new
+  }
+
+  // If no entries exist, start with Volume 1
+  return { volume: 1, year: currentYear };
 };
 
 // Create a new thesis entry
 export const createThesis = async (thesisData) => {
   try {
     const thesisId = await generateThesisId();
-    const { volume, year } = generateVolume(); // Generate both volume and year
+    const { volume, year } = await generateVolume(); // Generate both volume and year
     const completeThesisData = {
       thesisId,
       title: thesisData.title,
@@ -62,7 +73,6 @@ export const createThesis = async (thesisData) => {
     throw new Error(e.message);
   }
 };
-
 
 // Update an existing thesis
 export const updateThesis = async (id, updatedData) => {

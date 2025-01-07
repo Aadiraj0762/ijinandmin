@@ -6,19 +6,16 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
-
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs/CustomBreadcrumbs';
 import { useSettingsContext } from '../../components/settings';
-import { PATH_DASHBOARD } from '../../routes/paths';
-// 
 import { getConferenceById } from '../../controller/articlesController';
+import { PATH_DASHBOARD } from '../../routes/paths';
 
 const formatFirestoreTimestamp = (timestamp) => {
   if (!timestamp || !timestamp.seconds) return '';
   const date = new Date(timestamp.seconds * 1000);
   return format(date, 'dd-MM-yyyy');
 };
-
 function sanitizeHTML(htmlContent) {
   return DOMPurify.sanitize(htmlContent);
 }
@@ -45,7 +42,6 @@ const ConferenceOverviewTab = ({ conference }) => (
           </Grid>
         )}
         <Grid item xs={12} md={9}>
-
           <Grid container spacing={1}>
             {/* Conference Details with full width */}
             <Grid item xs={12}>
@@ -67,7 +63,6 @@ const ConferenceOverviewTab = ({ conference }) => (
                     </Typography>
                   </Grid>
                 )}
-
                 {conference.venue && (
                   <Grid item xs={12} md={6}>
                     <Typography>
@@ -75,7 +70,6 @@ const ConferenceOverviewTab = ({ conference }) => (
                     </Typography>
                   </Grid>
                 )}
-
                 {conference.date && (
                   <Grid item xs={12} md={6}>
                     <Typography>
@@ -83,7 +77,6 @@ const ConferenceOverviewTab = ({ conference }) => (
                     </Typography>
                   </Grid>
                 )}
-
                 {conference.contactPerson && (
                   <Grid item xs={12} md={6}>
                     <Typography>
@@ -91,7 +84,6 @@ const ConferenceOverviewTab = ({ conference }) => (
                     </Typography>
                   </Grid>
                 )}
-
                 {conference.email && (
                   <Grid item xs={12} md={6}>
                     <Typography>
@@ -99,7 +91,6 @@ const ConferenceOverviewTab = ({ conference }) => (
                     </Typography>
                   </Grid>
                 )}
-
                 {conference.country && (
                   <Grid item xs={12} md={6}>
                     <Typography>
@@ -107,7 +98,6 @@ const ConferenceOverviewTab = ({ conference }) => (
                     </Typography>
                   </Grid>
                 )}
-
                 {conference.language && (
                   <Grid item xs={12} md={6}>
                     <Typography>
@@ -115,7 +105,6 @@ const ConferenceOverviewTab = ({ conference }) => (
                     </Typography>
                   </Grid>
                 )}
-
                 {conference && conference.Status && (
                   <Grid item xs={12} md={6}>
                     <Typography>
@@ -123,12 +112,10 @@ const ConferenceOverviewTab = ({ conference }) => (
                     </Typography>
                   </Grid>
                 )}
-
                 {/* Divider before the description */}
                 <Grid item xs={12}>
                   <Divider sx={{ my: 2 }} />
                 </Grid>
-
                 {conference.description && (
                   <Grid item xs={12}>
                     <Typography>
@@ -149,7 +136,6 @@ const ConferenceOverviewTab = ({ conference }) => (
     </Box>
   </Card>
 );
-
 ConferenceOverviewTab.propTypes = {
   conference: PropTypes.shape({
     title: PropTypes.string,
@@ -163,10 +149,8 @@ ConferenceOverviewTab.propTypes = {
     description: PropTypes.string,
     Status: PropTypes.string,
     coverImage: PropTypes.string,
-
   }).isRequired,
 };
-
 //   export default ConferenceOverviewTab;
 export default function ConferenceDetailsPage() {
   const { themeStretch } = useSettingsContext();
@@ -174,7 +158,6 @@ export default function ConferenceDetailsPage() {
   const [conference, setConference] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const theme = useTheme();
-
   useEffect(() => {
     const fetchConference = async () => {
       try {
@@ -186,18 +169,15 @@ export default function ConferenceDetailsPage() {
         setIsLoading(false);
       }
     };
-
     if (id) {
       fetchConference();
     }
   }, [id]);
-
   return (
     <>
       <Helmet>
         <title>{`Conference: ${conference?.title || 'Loading...'} | INTERNATIONAL JOURNAL INDEXING`}</title>
       </Helmet>
-
       <Container maxWidth={themeStretch ? false : 'lg'} style={{ backgroundImage: 'url("https://w0.peakpx.com/wallpaper/855/63/HD-wallpaper-light-purple-plain-background-purple.jpg")', height: '300px' }}>
         <CustomBreadcrumbs
           heading="Conference Details"
@@ -210,7 +190,6 @@ export default function ConferenceDetailsPage() {
             { name: conference?.title || 'Loading...', style: { color: '#451245' } },
           ]}
         />
-
         {/* Conditional rendering: Check if conference data is loaded */}
         {!isLoading && conference ? (
           <ConferenceOverviewTab conference={conference} />
